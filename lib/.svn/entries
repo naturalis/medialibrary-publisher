@@ -1,0 +1,40 @@
+10
+
+dir
+415
+svn://dev2.etibioinformatics.nl/NBCMediaLib/MediaPublisher/trunk/lib
+svn://dev2.etibioinformatics.nl/NBCMediaLib
+
+
+
+2013-10-17T11:24:03.197870Z
+291
+aholleman
+has-props
+
+
+svn:externals
+
+
+
+
+
+
+
+
+
+
+93dfd427-4936-4502-8cc0-9f0d10d925b4
+
+phMagick
+dir
+
+Psr
+dir
+
+PHPMailer_5.2.4
+dir
+
+Monolog
+dir
+

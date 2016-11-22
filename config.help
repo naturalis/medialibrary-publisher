@@ -1,0 +1,143 @@
+producer					The name of the producer (a.k.a. digistraat) of the media files
+harvestDirectory			The full path of the folder into which the producer places the
+							original media files
+duplicatesDirectory			The directory into which to place duplicate media files.
+resubmitDirectory			The directory into which the producer may place media files that
+							should be treated as re-submittals of previously submitted media
+							files (e.g. because the first version was deemed inadequate).
+							Files found in this directory will overwrite the previously
+							submitted file, rather than cause a duplicate-file-error.
+stagingDirectory			The directory to which to move the media files before processing
+							them any further. This is so that each morning, media producers
+							can start afresh with an empty harvest folder, no matter whether
+							the harvesting process succeeded or not. Note that the harvesting
+							process will create subdirectories under ${stagingDirectory}
+							named after the ${producer}. Thus, multiple producers may have the
+							same value for ${stagingDirectory} without risking name collisions.
+masterDirectory				The directory into which to place the master files. Comments for
+							stagingDirectory apply here, too.
+wwwDirectory				The directory into which to place the files to be served by the
+							NBC Media Server. Comments for stagingDirectory apply here, too.
+logDirectory				The directory into which to write log files. Again, there is no
+							risk of one log file being written to by different processes.
+deadImagesDirectory			The directory into which to place corrupt images. Comments for
+							stagingDirectory apply here, too.
+							
+numBackupGroups				The number of simultaneous backup processes. When media files get
+							files get harvested, they will be assigned a backup group (a
+							number looping between 0 to ${numBackupGroups}). Each backup
+							process (offload.php) is carried out for just one backup group,
+							and it will only backup the media files with that backup group.
+							This allows for the parallelization of the backup process. If you
+							don't need parallelization set numBackupGroups to 1, and pass 0
+							as the backup group to offload.php. N.B. just like the database
+							connection details this must be regarded a producer-independent
+							setting that must be the same across all ini files.
+
+fileTypes					A comma-separated list of file types to pick up from the harvest
+							directory, e.g. "tif,jpg,pdf". Other types of files will be not
+							be moved over to the staging area.
+
+logging.stdout				Whether or not to log to standard out as well
+logging.level				Log level. Valid values: DEBUG, INFO, WARNING, ERROR
+
+db0.host					Database host
+db0.user					Database user
+db0.password				Database password
+db0.dbname					Database name / schema
+
+tar.maxSize					Maximum size of the tar files in MegaBytes. The tar files may
+							actually get somewhat bigger as this number functions as a
+							treshold after which no more media files are added to the tar
+							file.
+tar.maxFiles				Maximum number of media files in a tar file. Zero means no
+							maximum.
+tar.type					The method used to tar the media files. Valid values: PHP,
+							UNIX, CUSTOM. With PHP, PHP's own tar functions are used. Does
+							seem to be unreliable on UNIX. With UNIX, the native unix tar
+							is executed. With CUSTOM, a custom unix command or script is
+							executed, and the assumption is that this command or script
+							will not only tar the media files, but also offload the 
+							resulting tar file to Beeld & Geluid. 
+tar.command					The command or script to be executed in case ${tar.type} is
+							set to CUSTOM. You can include some placeholders: %local_dir%
+							will be replaced by the directory to be tarred. %remote_dir%
+							will be replaced with the directory on the FTP server into
+							which to place the tar file. %name% will be replaced with the
+							name to be given to the tar file
+tar.offloadImmediate		Whether to FTP a tar file directly after it has been created,
+							or to wait until all tar files have been created and then
+							offload them one after the other.
+
+offlinestorage.ftp.host							FTP host
+offlinestorage.ftp.user							FTP user
+offlinestorage.ftp.password						FTP password
+offlinestorage.ftp.initDir						Remote directory to change to after login 
+offlinestorage.ftp.reconnectPerFile				Whether to disconnect and reconnect for
+												each file. Might help in case of a shaky
+												connection
+offlinestorage.ftp.maxConnectionAttempts		Maximum number of connection attempts
+offlinestorage.ftp.maxUploadAttempts			Maximum number of upload attempts per tar file
+
+
+#### The following settings apply to the creation of the master files
+resizeWhen.fileType			Type of files to consider for resizing using ImageMagick.
+							E.g. "tiff,jpg,tif,jpeg,gif,png"
+resizeWhen.imageSize		Dimension (either width or height) above which resizing will
+							take place. If both width and height are less than
+							${resizeWhen.imageSize}, the image will not be resized.
+							However, if it is not a JPEG image, it is still converted to
+							JPEG.
+imagemagick.convertCommand	The sprintf template for the (ImsgeMagick) conversion command.
+							Most likely "convert \"%s\" \"%s\""
+imagemagick.resizeCommand	The sprintf template for the (ImageMagick) resize command.
+							Should look somewhat like this:
+							convert \"%s\" -resize 3000x3000^> -quality 80 \"%s\"
+							Note the ">" character. This has special meaning both in unix
+							shell commands and in dos commands and must therefore be escaped:
+							with a "^" for dos and a "\" for unix.
+							
+
+#### The following settings apply to the creation of the www-accessible files
+imagemagick.command			The ImageMagick convert command. If it is in the ${PATH}, it
+							should simply be "convert".
+imagemagick.large.size		Size of the large images
+imagemagick.large.quality	Quality of the large images
+imagemagick.medium.size		Size of the medium images
+imagemagick.medium.quality	Quality of the medium images
+imagemagick.small.size		Size of the small images (thumbnails)
+imagemagick.small.quality	Quality of the small images
+
+#### The following settings apply to the creation of both master files and www-accessible files
+imagemagick.maxErrors		The maximum number of convert/resize errors before the program
+							aborts. Zero means no maximum.
+
+
+
+cleaner.minDaysOld			The minimum age (in days) for a media file to be a candidate for
+							removal from the staging area. If the file is younger, the
+							StagingAreaCleaner will leave it alone, even if the file was
+							successfully processed by all harvesting-related processes (backup,
+							master publisher, www publisher).
+cleaner.sweep				Valid values: true, false. If false, the StagingAreaCleaner will
+							only clean staging areas for the ${producer} defined in this
+							configuration file. If true, all producers who share the
+							${stagingDirectory} defined in this configuration file will also
+							have their staging areas cleaned. Thus, you don't need to run as
+							many cleaners as there are producers; you only need to run as many
+							cleaners as there are distinct staging area directories.
+cleaner.unixRemove			If set to "true", directories will be removed using "rm -rf".
+							Otherwise are removed using "pure" PHP - i.e. without resorting to
+							a PHP exec() call.
+							
+
+
+mail.to						Comma-separated list of email addresses for email notification
+mail.onsuccess				Whether or not to send an email when the program finished without
+							errors
+
+debug.maxFiles				A debug setting. Maximum number of files to process. SHOULD BE
+							ZERO IN PRODUCTION. 
+
+
+

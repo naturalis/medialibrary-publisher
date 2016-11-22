@@ -1,0 +1,57 @@
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+CREATE TABLE deleted_media (
+  id int(10) unsigned NOT NULL DEFAULT '0',
+  regno varchar(127) NOT NULL,
+  producer varchar(16) DEFAULT NULL,
+  `owner` varchar(16) DEFAULT NULL,
+  source_file varchar(255) DEFAULT NULL,
+  source_file_created datetime DEFAULT NULL,
+  master_file varchar(255) DEFAULT NULL,
+  master_published datetime DEFAULT NULL,
+  www_dir varchar(127) DEFAULT NULL,
+  www_file varchar(127) DEFAULT NULL,
+  www_published datetime DEFAULT NULL,
+  tar_file_id int(10) unsigned DEFAULT NULL,
+  backup_group tinyint(3) unsigned NOT NULL DEFAULT '0',
+  backup_ok tinyint(1) unsigned NOT NULL DEFAULT '0',
+  master_ok tinyint(1) unsigned NOT NULL DEFAULT '0',
+  www_ok tinyint(1) unsigned NOT NULL DEFAULT '0',
+  date_deleted timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE media (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  regno varchar(127) NOT NULL,
+  producer varchar(16) DEFAULT NULL,
+  `owner` varchar(16) DEFAULT NULL,
+  source_file varchar(255) DEFAULT NULL,
+  source_file_created datetime DEFAULT NULL,
+  master_file varchar(255) DEFAULT NULL,
+  master_published datetime DEFAULT NULL,
+  www_dir varchar(127) DEFAULT NULL,
+  www_file varchar(127) DEFAULT NULL,
+  www_published datetime DEFAULT NULL,
+  tar_file_id int(10) unsigned DEFAULT NULL,
+  backup_group tinyint(3) unsigned NOT NULL DEFAULT '0',
+  backup_ok tinyint(1) unsigned NOT NULL DEFAULT '0',
+  master_ok tinyint(1) unsigned NOT NULL DEFAULT '0',
+  www_ok tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  UNIQUE KEY unique_01 (regno),
+  KEY tar_file_id (tar_file_id),
+  KEY www_file (www_file),
+  KEY master_ok (master_ok,www_ok),
+  KEY www_ok (www_ok),
+  KEY backup_group (backup_group,backup_ok)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE tar_file (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(127) NOT NULL,
+  remote_dir varchar(255) DEFAULT NULL,
+  backup_created datetime DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

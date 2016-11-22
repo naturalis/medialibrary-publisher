@@ -1,0 +1,18 @@
+VERSION HISTORY
+===========================================================================
+Version 1.1.000
+o  Merged configuration files
+o  Added config.help
+o  Improved email notification
+
+Version 1.0.002
+o  Fixed bug caused by RecursiveDirectoryIterator, which re-processes a
+   file if its base name is changed while iterating
+
+Version 1.0.001
+o  Fixed bug where files could be doubly processed
+o  The harvester, master publisher and www publisher can now be run at
+   will and whenever without running the risk of corrupting the file
+   system, the backup server and/or the media database
+o  Added this README file
+
