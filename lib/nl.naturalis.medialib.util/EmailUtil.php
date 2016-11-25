@@ -4,14 +4,14 @@ namespace nl\naturalis\medialib\util;
 
 use nl\naturalis\medialib\util\context\Context;
 
-/** 
+/**
  * @author ayco_holleman
- * 
+ *
  */
 class EmailUtil
 {
 
-	
+
 	/**
 	 * @param Context $context
 	 */
@@ -22,6 +22,7 @@ class EmailUtil
 			return false;
 		}
 		$mail = new \PHPMailer();
+		$mail->SMTPDebug = 2;
 		foreach ($mailTo as $address) {
 			$mail->AddAddress($address);
 		}
