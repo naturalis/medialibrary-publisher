@@ -28,6 +28,8 @@ CREATE TABLE media (
   `owner` varchar(16) DEFAULT NULL,
   source_file varchar(255) DEFAULT NULL,
   source_file_created datetime DEFAULT NULL,
+  source_file_sha256 char(64) DEFAULT NULL,
+  source_file_backup_created datetime DEFAULT NULL,
   master_file varchar(255) DEFAULT NULL,
   master_published datetime DEFAULT NULL,
   www_dir varchar(127) DEFAULT NULL,
