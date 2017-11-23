@@ -1,3 +1,5 @@
 *.ini
 /.buildpath
 /.project
+/vendor/
+/composer.lock
