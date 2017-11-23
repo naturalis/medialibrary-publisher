@@ -36,7 +36,10 @@ offload.ftp.initDir = "ftp-test2"
 offload.ftp.reconnectPerFile = "false"
 offload.ftp.maxConnectionAttempts = 1
 offload.ftp.maxUploadAttempts = 1
-
+offload.amazon.region = ""
+offload.amazon.bucket = ""
+offload.amazon.key = ""
+offload.amazon.secret = ""
 
 resizeWhen.fileType = "tiff,jpg,tif,jpeg,gif,png"
 resizeWhen.imageSize = 3000
