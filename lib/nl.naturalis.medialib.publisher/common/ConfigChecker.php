@@ -63,6 +63,16 @@ class ConfigChecker {
 			}
 		}
 		
+		$aws = ['region', 'bucket', 'key', 'secret'];
+		foreach ($aws as $setting) {
+			if (!isset($this->_config->offload->aws->{$setting}) || 
+				empty($this->_config->offload->aws->{$setting})) {
+				throw new Exception('Configuration error: offload.aws. ' . $setting . ' not set');
+			}
+		}
+		
+		
+		
 		// More checks ...
 	}
 
