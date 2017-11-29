@@ -37,6 +37,7 @@ offload.ftp.reconnectPerFile = "false"
 offload.ftp.maxConnectionAttempts = 1
 offload.ftp.maxUploadAttempts = 1
 offload.aws.region = ""
+offload.aws.version = "latest"
 offload.aws.bucket = ""
 offload.aws.key = ""
 offload.aws.secret = ""

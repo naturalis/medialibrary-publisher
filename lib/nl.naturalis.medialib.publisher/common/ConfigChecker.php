@@ -63,7 +63,7 @@ class ConfigChecker {
 			}
 		}
 		
-		$aws = ['region', 'bucket', 'key', 'secret'];
+		$aws = ['region', 'bucket', 'key', 'secret', 'version'];
 		foreach ($aws as $setting) {
 			if (!isset($this->_config->offload->aws->{$setting}) || 
 				empty($this->_config->offload->aws->{$setting})) {
