@@ -55,11 +55,11 @@ class Offloader extends PublisherObject {
 			$tarAreaManager->createTarArea();
 			// Ruud: changed behaviour: moveMediaToBuckets returns list of files instead
 			// of number of files. This allows us to reuse the files' ids in the database.
-			// If not set, we must query the entire database for the file's id...
+			// If not set, we will have to deduce the id from the file path.
 			$fileList = $tarAreaManager->moveMediaToBuckets();
 			$numMedia = count($fileList);
 			
-			if($numMedia == 0) {
+			if ($numMedia == 0) {
 				throw new JoblessException();
 			}
 			
@@ -68,7 +68,7 @@ class Offloader extends PublisherObject {
 			$remoteStorageManager->setFileList($fileList);
 			$remoteStorageManager->sendBatch();
 			
-			/* FTP method
+			/* Disabled FTP method to Beeld & Geluid
 
 			$tarFileCreator = new TarFileCreator($this->_context, $this->_backupGroup);
 			$tarFileCreator->setBucketsDirectory($tarAreaManager->getBucketsDirectory());
