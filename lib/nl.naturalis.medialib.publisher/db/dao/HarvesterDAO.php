@@ -87,7 +87,6 @@ class HarvesterDAO extends BaseDAO {
 		return $stmt;
 	}
 
-
 	public function registerTarFile($name, $remoteDirectory)
 	{
 		$sql = 'INSERT INTO tar_file(name,remote_dir,backup_created) VALUES(?,?,now())';
@@ -123,6 +122,23 @@ class HarvesterDAO extends BaseDAO {
 		if($stmt->rowCount() === 0) {
 			throw new Exception("No tar file registered with name \"$tarFile\"");
 		}
+	}
+	
+	public function setBackupOkForMediaFile ($id, $sha256, $awsUri, $created = false)
+	{
+		$sql = 'UPDATE media 
+			SET (source_file_sha256 = ?, source_file_aws_uri = ?, source_file_backup_created = ?, backup_ok = 1) 
+			WHERE id = ?';
+		$stmt = $this->_pdo->prepare($sql);
+		$stmt->bindValue(1, $sha256);
+		$stmt->bindValue(2, $awsUri);
+		$stmt->bindValue(3, $created ? $created : date("Y-m-d H:i:s"));
+		$stmt->bindValue(4, $id);
+		$this->_executeStatement($stmt);
+		if ($stmt->rowCount() === 0) {
+			throw new Exception("Could not set source file AWS backup data for file id: $id");
+		}
+		
 	}
 
 }

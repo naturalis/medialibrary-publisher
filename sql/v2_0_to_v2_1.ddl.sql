@@ -1,7 +1,8 @@
 -- Add hash and backup date for individual files --
 ALTER TABLE `media` 
 ADD `source_file_sha256` CHAR(64) NULL AFTER `source_file_created`, 
-ADD `source_file_backup_created` DATETIME NULL AFTER `source_file_sha256`;
+ADD `source_file_aws_uri` VARCHAR(255) NULL AFTER `source_file_sha256`, 
+ADD `source_file_backup_created` DATETIME NULL AFTER `source_file_aws_uri`;
 
 -- Move tar backup date to media table --
 UPDATE media AS t1

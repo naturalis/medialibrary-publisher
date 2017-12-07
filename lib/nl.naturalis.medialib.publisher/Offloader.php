@@ -53,21 +53,28 @@ class Offloader extends PublisherObject {
 			
 			$tarAreaManager = new TarAreaManager($this->_context, $this->_backupGroup);
 			$tarAreaManager->createTarArea();
-			$numMedia = $tarAreaManager->moveMediaToBuckets();
+			// Ruud: changed behaviour: moveMediaToBuckets returns list of files instead
+			// of number of files. This allows us to reuse the files' ids in the database.
+			// If not set, we must query the entire database for the file's id...
+			$fileList = $tarAreaManager->moveMediaToBuckets();
+			$numMedia = count($fileList);
 			
 			if($numMedia == 0) {
 				throw new JoblessException();
 			}
 			
-			$remoteStorageManager = new RemoteStorageManager($this->_context);
+			$remoteStorageManager = new AwsStorageManager($this->_context);
 			$remoteStorageManager->setTarsDirectory($tarAreaManager->getTarsDirectory());
+			$remoteStorageManager->setFileList($fileList);
 			
+			/*
 			$tarFileCreator = new TarFileCreator($this->_context, $this->_backupGroup);
 			$tarFileCreator->setBucketsDirectory($tarAreaManager->getBucketsDirectory());
 			$tarFileCreator->setTarsDirectory($tarAreaManager->getTarsDirectory());
 			$tarFileCreator->setBackupGroup($this->_backupGroup);
 			$tarFileCreator->setRemoteStorageManager($remoteStorageManager);
 			$tarFileCreator->createTarFiles();
+			*/
 			
 			// If tar files must be offloaded right after they are created, the 
 			// {@code TarFileCreator} will call the {@code RemoteStorageManager}'s
