@@ -124,15 +124,15 @@ class HarvesterDAO extends BaseDAO {
 		}
 	}
 	
-	public function setBackupOkForMediaFile ($id, $sha256, $awsUri, $created = false)
+	public function setBackupOkForMediaFile ($id, $fileInfo)
 	{
 		$sql = 'UPDATE media 
 			SET (source_file_sha256 = ?, source_file_aws_uri = ?, source_file_backup_created = ?, backup_ok = 1) 
 			WHERE id = ?';
 		$stmt = $this->_pdo->prepare($sql);
-		$stmt->bindValue(1, $sha256);
-		$stmt->bindValue(2, $awsUri);
-		$stmt->bindValue(3, $created ? $created : date("Y-m-d H:i:s"));
+		$stmt->bindValue(1, $fileInfo->sha256);
+		$stmt->bindValue(2, $fileInfo->awsUri);
+		$stmt->bindValue(3, $fileInfo->created);
 		$stmt->bindValue(4, $id);
 		$this->_executeStatement($stmt);
 		if ($stmt->rowCount() === 0) {
