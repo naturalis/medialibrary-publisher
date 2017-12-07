@@ -58,7 +58,7 @@ class AwsStorageManager extends RemoteStorageManager {
 		$this->_logStatistics($startTime);
 	}
 	
-	public function setFileList ($list)
+	public function setFileList (array $list)
 	{
 		$this->_fileList = $list;
 	}

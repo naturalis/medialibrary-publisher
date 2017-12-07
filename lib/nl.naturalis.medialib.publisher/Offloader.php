@@ -66,15 +66,17 @@ class Offloader extends PublisherObject {
 			$remoteStorageManager = new AwsStorageManager($this->_context);
 			$remoteStorageManager->setTarsDirectory($tarAreaManager->getTarsDirectory());
 			$remoteStorageManager->setFileList($fileList);
+			$remoteStorageManager->sendBatch();
 			
-			/*
+			/* FTP method
+
 			$tarFileCreator = new TarFileCreator($this->_context, $this->_backupGroup);
 			$tarFileCreator->setBucketsDirectory($tarAreaManager->getBucketsDirectory());
 			$tarFileCreator->setTarsDirectory($tarAreaManager->getTarsDirectory());
 			$tarFileCreator->setBackupGroup($this->_backupGroup);
 			$tarFileCreator->setRemoteStorageManager($remoteStorageManager);
 			$tarFileCreator->createTarFiles();
-			*/
+			
 			
 			// If tar files must be offloaded right after they are created, the 
 			// {@code TarFileCreator} will call the {@code RemoteStorageManager}'s
@@ -89,6 +91,8 @@ class Offloader extends PublisherObject {
 			if(!$offloadImmediate && $offloadMethod !== 'CUSTOM') {
 				$remoteStorageManager->sendBatch();
 			}
+			
+			*/
 		}
 		catch(Exception $e) {
 			if(!($e instanceof JoblessException)) {
