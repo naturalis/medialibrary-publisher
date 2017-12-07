@@ -47,7 +47,7 @@ class AwsStorageManager extends RemoteStorageManager {
 					throw new Exception('Could not put ' . $file . ' to AWS');
 				}
 				
-				$this->_dao->setBackupOkForMediaFile($file);
+				$this->_dao->setBackupOkForMediaFile($file, );
 			}
 			
 		} catch (Exception $e) {
