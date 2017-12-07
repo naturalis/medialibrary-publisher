@@ -125,8 +125,7 @@ class AwsStorageManager extends RemoteStorageManager {
 				],
 			]);
 			
-		} catch (Exception $e) {
-			$this->_logger->addError('Could not initialize AWS client, check config settings!');
+		} catch (S3Exception $e) {
 			throw $e;
 		}
 	}
