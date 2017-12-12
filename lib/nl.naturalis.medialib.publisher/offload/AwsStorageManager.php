@@ -1,6 +1,6 @@
 <?php
 
-namespace nl\naturalis\medialib\publisher;
+namespace nl\naturalis\medialib\publisher\offload;
 
 require APPLICATION_PATH . '/vendor/autoload.php';
 
