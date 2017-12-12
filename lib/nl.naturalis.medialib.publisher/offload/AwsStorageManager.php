@@ -42,7 +42,7 @@ class AwsStorageManager extends RemoteStorageManager {
 			$this->_logger->addInfo('Offloading files to AWS');
 			$this->_logger->addInfo('Buckets directory: ' . $this->_bucketsDirectory);
 			
-			$this->_logger->addInfo(print_r($this->_bucketsDirectory)); die();
+			$this->_logger->addInfo(print_r(FileUtil::scandir($this->_bucketsDirectory))); 
 			
 			foreach (FileUtil::scandir($this->_bucketsDirectory) as $file) {
 				PublisherObject::checkPanicFile($panicFile);
