@@ -52,25 +52,15 @@ class Offloader extends PublisherObject {
 		
 		try {
 			
+			/* Disabled FTP method to Beeld & Geluid
+
 			$tarAreaManager = new TarAreaManager($this->_context, $this->_backupGroup);
 			$tarAreaManager->createTarArea();
-			// Ruud: changed behaviour: moveMediaToBuckets returns list of files instead
-			// of number of files. This allows us to reuse the files' ids in the database.
-			// If not set, we will have to deduce the id from the file path.
-			$fileList = $tarAreaManager->moveMediaToBuckets();
-			$numMedia = count($fileList);
-			
+			$numMedia = $tarAreaManager->moveMediaToBuckets();
 			if ($numMedia == 0) {
 				throw new JoblessException();
 			}
 			
-			$remoteStorageManager = new AwsStorageManager($this->_context);
-			$remoteStorageManager->setBucketsDirectory($tarAreaManager->getBucketsDirectory());
-			$remoteStorageManager->setFileList($fileList);
-			$remoteStorageManager->sendBatch();
-			
-			/* Disabled FTP method to Beeld & Geluid
-
 			$tarFileCreator = new TarFileCreator($this->_context, $this->_backupGroup);
 			$tarFileCreator->setBucketsDirectory($tarAreaManager->getBucketsDirectory());
 			$tarFileCreator->setTarsDirectory($tarAreaManager->getTarsDirectory());
@@ -94,6 +84,13 @@ class Offloader extends PublisherObject {
 			}
 			
 			*/
+			
+			$awsStorageManager = new AwsStorageManager($this->_context);
+			if (count($awsStorageManager->getOffloadableMedia()) == 0) {
+				throw new JoblessException();
+			}
+			$remoteStorageManager->sendBatch();
+			
 		}
 		catch(Exception $e) {
 			if(!($e instanceof JoblessException)) {

@@ -11,7 +11,6 @@ use nl\naturalis\medialib\util\DateTimeUtil;
 use nl\naturalis\medialib\util\FileUtil;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
-use Monolog\Logger;
 
 /**
  *
@@ -20,18 +19,55 @@ use Monolog\Logger;
 class AwsStorageManager extends RemoteStorageManager {
 	
 	private $_awsClient;
-	private $_fileList;
-	private $_bucketsDirectory;
+	private $_backupGroup;
+	private $_fileList = [];
 	
-	public function __construct(Context $context)
+	public function __construct (Context $context, $backupGroup)
 	{
 		parent::__construct($context);
+		$this->_backupGroup = $backupGroup;
+	}
+	
+	public function getOffloadableMedia ()
+	{
+		// Was the process interrupted before we even got this far?
+		$panicFile = $this->_context->getRequiredProperty('panicFile');
+		PublisherObject::validatePanicFile($panicFile);
+		
+		try {
+			
+			$this->_logger->addDebug("Retrieving media for backup group {$this->_backupGroup}");
+			$stmt = $this->_dao->getOffloadableMedia($this->_backupGroup);
+			while ($media = $stmt->fetch()) {
+				PublisherObject::checkPanicFile($panicFile);
+				$path = $media->source_file;
+				if (!is_file($path)) {
+					$this->_logger->addWarning("Stale database record (no such file: \"$path\"). Record will be removed from media database.");
+					$this->_dao->deleteMedia($media->id);
+					continue;
+				}
+				$this->_fileList[$media->id] = $media->source_file;
+			}
+		
+		} catch (Exception $e) {
+			throw $e;
+		}
+		
+		return $this->_fileList;
+	}
+	
+	public function getFileList () 
+	{
+		if (!empty($this->_fileList)) {
+			return $this->_fileList;
+		}
+		return $this->getOffloadableMedia();
 	}
 
 	/**
 	 * Overrides method in RemoteStorageManager
 	 */
-	public function sendBatch()
+	public function sendBatch ()
 	{
 		$panicFile = $this->_context->getRequiredProperty('panicFile');
 		PublisherObject::validatePanicFile($panicFile);
@@ -40,15 +76,9 @@ class AwsStorageManager extends RemoteStorageManager {
 		
 		try {
 			$this->_logger->addInfo('Offloading files to AWS');
-			$this->_logger->addInfo('Buckets directory: ' . $this->_bucketsDirectory);
 			
-			$this->_logger->addInfo(print_r(FileUtil::scandir($this->_bucketsDirectory))); 
-			
-			foreach (FileUtil::scandir($this->_bucketsDirectory) as $file) {
+			foreach ($this->getFileList() as $file) {
 				PublisherObject::checkPanicFile($panicFile);
-				if ($file === '.' || $file === '..') {
-					continue;
-				}
 				$this->_logger->addDebug('Offloading ' . $file);
 				$result = $this->put($file);
 				if (isset($result->error)) {
@@ -66,16 +96,6 @@ class AwsStorageManager extends RemoteStorageManager {
 		$this->_logStatistics($startTime);
 	}
 	
-	public function setFileList (array $list)
-	{
-		$this->_fileList = $list;
-	}
-	
-	public function setBucketsDirectory($dir)
-	{
-		$this->_bucketsDirectory = $dir;
-	}
-		
 	public function put ($file) 
 	{
 		if (!$this->awsClient) {

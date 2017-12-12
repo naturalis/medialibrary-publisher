@@ -183,7 +183,6 @@ class TarAreaManager {
 					continue;
 				}
 				++$totalFiles;
-				$fileList[$media->id] = $media->source_file;
 				$fz = filesize($path);
 				$size += $fz;
 				$totalSize += $fz;
@@ -215,9 +214,7 @@ class TarAreaManager {
 		
 		$this->_logStatistics($startTime, $totalSize, $totalFiles);
 		
-		// Ruud: changed behaviour: moveMediaToBuckets returns list of files instead
-		// of number of files. This allows us to reuse the files' ids in the database.
-		return $fileList;
+		return count($totalFiles);
 		
 	}
 	
