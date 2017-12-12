@@ -4,9 +4,12 @@ namespace nl\naturalis\medialib\publisher\offload;
 
 require APPLICATION_PATH . '/vendor/autoload.php';
 
+use nl\naturalis\medialib\publisher\PublisherObject;
+use nl\naturalis\medialib\util\context\Context;
+use nl\naturalis\medialib\util\DateTimeUtil;
+use nl\naturalis\medialib\util\FileUtil;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
-
 
 /**
  *
