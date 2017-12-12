@@ -65,7 +65,7 @@ class Offloader extends PublisherObject {
 			}
 			
 			$remoteStorageManager = new AwsStorageManager($this->_context);
-			$remoteStorageManager->setTarsDirectory($tarAreaManager->getTarsDirectory());
+			$remoteStorageManager->setBucketsDirectory($tarAreaManager->getBucketsDirectory());
 			$remoteStorageManager->setFileList($fileList);
 			$remoteStorageManager->sendBatch();
 			

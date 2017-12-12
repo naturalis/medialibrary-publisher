@@ -20,6 +20,7 @@ class AwsStorageManager extends RemoteStorageManager {
 	
 	private $_awsClient;
 	private $_fileList;
+	private $_bucketsDirectory;
 	
 	public function __construct(Context $context)
 	{
@@ -38,9 +39,11 @@ class AwsStorageManager extends RemoteStorageManager {
 		
 		try {
 			$this->_logger->addInfo('Offloading files to AWS');
-			$this->_logger->addInfo('Local directory: ' . $this->_tarsDir);
+			$this->_logger->addInfo('Buckets directory: ' . $this->_bucketsDirectory);
 			
-			foreach (FileUtil::scandir($this->_tarsDir) as $file) {
+			$this->_logger->addInfo(print_r($this->_logger->addInfo)); die();
+			
+			foreach (FileUtil::scandir($this->_bucketsDirectory) as $file) {
 				PublisherObject::checkPanicFile($panicFile);
 				if ($file === '.' || $file === '..') {
 					continue;
@@ -66,7 +69,11 @@ class AwsStorageManager extends RemoteStorageManager {
 	{
 		$this->_fileList = $list;
 	}
-
+	
+	public function setBucketsDirectory($dir)
+	{
+		$this->_bucketsDirectory = $dir;
+	}
 		
 	public function put ($file) 
 	{
