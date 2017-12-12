@@ -5,8 +5,9 @@ namespace nl\naturalis\medialib\publisher;
 use \Exception;
 use nl\naturalis\medialib\publisher\PublisherObject;
 use nl\naturalis\medialib\publisher\offload\TarAreaManager;
-use nl\naturalis\medialib\publisher\offload\TarFileCreator;
+// use nl\naturalis\medialib\publisher\offload\TarFileCreator;
 use nl\naturalis\medialib\publisher\offload\RemoteStorageManager;
+use nl\naturalis\medialib\publisher\offload\AwsStorageManager;
 use nl\naturalis\medialib\publisher\exception\JoblessException;
 use nl\naturalis\medialib\util\DateTimeUtil;
 
@@ -105,7 +106,7 @@ class Offloader extends PublisherObject {
 		$this->_logger->addInfo('Total offload time: ' . DateTimeUtil::hoursMinutesSeconds((time() - $start), true));
 	}
 
-
+/*
 	protected function _getEmailSubjectLine()
 	{
 		if($this->_success) {
@@ -113,5 +114,14 @@ class Offloader extends PublisherObject {
 		}
 		return 'FOUT: Backup onverwacht afgebroken';
 	}
-
+*/
+	
+	protected function _getEmailSubjectLine()
+	{
+		if($this->_success) {
+			return 'SUCCES: Bestanden doorgestuurd naar AWS';
+		}
+		return 'FOUT: Backup onverwacht afgebroken';
+	}
+	
 }
