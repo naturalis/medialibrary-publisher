@@ -17,7 +17,7 @@ class AwsStorageManager extends RemoteStorageManager {
 	private $_awsClient;
 	private $_fileList;
 	
-	public function __construct(Context $context)
+	public function __construct($context)
 	{
 		parent::__construct($context);
 	}
