@@ -11,6 +11,7 @@ use nl\naturalis\medialib\util\DateTimeUtil;
 use nl\naturalis\medialib\util\FileUtil;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
+use Monolog\Logger;
 
 /**
  *
