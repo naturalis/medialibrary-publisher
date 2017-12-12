@@ -2,8 +2,9 @@
 
 namespace nl\naturalis\medialib\publisher\offload;
 
-//require APPLICATION_PATH . '/vendor/autoload.php';
+require APPLICATION_PATH . '/vendor/autoload.php';
 
+use nl\naturalis\medialib\publisher\offload\RemoteStorageManager;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
