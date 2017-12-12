@@ -104,6 +104,13 @@ class AwsStorageManager extends RemoteStorageManager {
 		return $result;
 	}
 	
+	protected function _logStatistics($startTime)
+	{
+		$seconds = time() - $startTime;
+		$this->_logger->addInfo('Time spent on offloading file to AWS: ' . 
+			DateTimeUtil::hoursMinutesSeconds($seconds, true));
+	}
+	
 	private function _initAwsClient () 
 	{
 		// Make sure AWS settings are present...
@@ -142,13 +149,6 @@ class AwsStorageManager extends RemoteStorageManager {
 		// Assume id is start of the file name
 		$tmp = explode('-', basename($file));
 		return ltrim(reset($tmp), 0);
-	}
-	
-	private function _logStatistics($startTime)
-	{
-		$seconds = time() - $startTime;
-		$this->_logger->addInfo('Time spent on offloading file to AWS: ' . 
-			DateTimeUtil::hoursMinutesSeconds($seconds, true));
 	}
 	
 }
