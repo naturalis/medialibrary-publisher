@@ -5,7 +5,7 @@ namespace nl\naturalis\medialib\publisher;
 use \Exception;
 use nl\naturalis\medialib\publisher\PublisherObject;
 use nl\naturalis\medialib\publisher\offload\TarAreaManager;
-use nl\naturalis\medialib\publisher\offload\TarFileCreator;
+// use nl\naturalis\medialib\publisher\offload\TarFileCreator;
 use nl\naturalis\medialib\publisher\offload\RemoteStorageManager;
 use nl\naturalis\medialib\publisher\offload\AwsStorageManager;
 use nl\naturalis\medialib\publisher\exception\JoblessException;
