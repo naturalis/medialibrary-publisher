@@ -4,7 +4,7 @@ namespace nl\naturalis\medialib\publisher;
 
 use \Exception;
 use nl\naturalis\medialib\publisher\PublisherObject;
-use nl\naturalis\medialib\publisher\offload\TarAreaManager;
+// use nl\naturalis\medialib\publisher\offload\TarAreaManager;
 // use nl\naturalis\medialib\publisher\offload\TarFileCreator;
 use nl\naturalis\medialib\publisher\offload\RemoteStorageManager;
 use nl\naturalis\medialib\publisher\offload\AwsStorageManager;
@@ -53,7 +53,6 @@ class Offloader extends PublisherObject {
 		try {
 			
 			/* Disabled FTP method to Beeld & Geluid
-
 			$tarAreaManager = new TarAreaManager($this->_context, $this->_backupGroup);
 			$tarAreaManager->createTarArea();
 			$numMedia = $tarAreaManager->moveMediaToBuckets();
@@ -82,10 +81,9 @@ class Offloader extends PublisherObject {
 			if(!$offloadImmediate && $offloadMethod !== 'CUSTOM') {
 				$remoteStorageManager->sendBatch();
 			}
-			
 			*/
 			
-			$awsStorageManager = new AwsStorageManager($this->_context);
+			$awsStorageManager = new AwsStorageManager($this->_context, $this->_backupGroup);
 			if (count($awsStorageManager->getOffloadableMedia()) == 0) {
 				throw new JoblessException();
 			}

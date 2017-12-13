@@ -28,13 +28,17 @@ class AwsStorageManager {
 	private $_backupGroup;
 	private $_fileList = [];
 	
-	public function __construct (Context $context, $backupGroup)
+	public function __construct (Context $context, $backupGroup = 0)
 	{
 		$this->_context = $context;
 		$this->_config = $context->getConfig();
 		$this->_logger = $context->getLogger(__CLASS__);
 		$this->_dao = new HarvesterDAO($context);
 		$time = $context->getRequiredProperty('start');
+		
+		if (empty($backupGroup)) {
+			throw new Exception('AWS error: backup group not set');
+		}
 		$this->_backupGroup = $backupGroup;
 	}
 	
