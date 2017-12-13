@@ -30,16 +30,22 @@ class AwsStorageManager {
 	
 	public function __construct (Context $context, $backupGroup = 0)
 	{
+		// RemoteStorage construct
 		$this->_context = $context;
 		$this->_config = $context->getConfig();
 		$this->_logger = $context->getLogger(__CLASS__);
 		$this->_dao = new HarvesterDAO($context);
 		$time = $context->getRequiredProperty('start');
 		
+		// Backup group is required, better make sure it's there
 		if (empty($backupGroup)) {
 			throw new Exception('AWS error: backup group not set');
 		}
 		$this->_backupGroup = $backupGroup;
+
+		// Check config for AWS settings
+		$configChecker = new ConfigChecker($this->_context);
+		$configChecker->checkConfig();
 	}
 	
 	public function getOffloadableMedia ()
@@ -134,7 +140,7 @@ class AwsStorageManager {
 					'mime_type' => mime_content_type($file),
 				],
 			]);
-			$info = $awsData->get('@metadata');
+			$info = $awsResult->get('@metadata');
 			$result->sha256 = $sha256;
 			$result->awsUri = isset($info['effectiveUri']) ? $info['effectiveUri'] : null;
 			$result->created = isset($info['headers']['date']) ?
@@ -158,10 +164,6 @@ class AwsStorageManager {
 	
 	private function _initAwsClient () 
 	{
-		// Make sure AWS settings are present...
-		$configChecker = new ConfigChecker($this->_context);
-		$configChecker->checkConfig();
-		
 		$version = $this->_config->offload->aws->version;
 		$region = $this->_config->offload->aws->region;
 		$key = $this->_config->offload->aws->key;
