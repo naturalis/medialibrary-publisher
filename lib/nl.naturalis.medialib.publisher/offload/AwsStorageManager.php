@@ -134,16 +134,17 @@ class AwsStorageManager {
 		$sha256 = hash_file('sha256', $file);
 		$extension = FileUtil::getExtension($file, true);
 		$key = trim(str_replace($extension, '', basename($file)), ". ");
+		
 		try {			
 			$awsResult = $this->_awsClient->putObject([
-				'Bucket'     => $bucket,
-				'Key'        => $key,
-				'SourceFile' => $file,
+				'Bucket'        => $bucket,
+				'Key'           => $key,
+				'SourceFile'    => $file,
 				"ContentSHA256" => $sha256,
-				'Metadata' => [
-					'file_name' => basename($file),
-					'extension' => $extension,
-					'mime_type' => mime_content_type($file),
+				'Content-Type'  => mime_content_type($file),
+				'Metadata'      => [
+					'Original-File-Name' => basename($file),
+					'Original-File-Extension' => $extension,
 				],
 			]);
 			$info = $awsResult->get('@metadata');
