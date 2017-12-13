@@ -23,7 +23,6 @@ class AwsStorageManager {
 	private $_logger;
 	private $_config;
 	private $_dao;
-	private $_conn;
 	private $_awsClient;
 	private $_backupGroup;
 	private $_fileList = [];
@@ -62,7 +61,8 @@ class AwsStorageManager {
 				PublisherObject::checkPanicFile($panicFile);
 				$path = $media->source_file;
 				if (!is_file($path)) {
-					$this->_logger->addWarning("Stale database record (no such file: \"$path\"). Record will be removed from media database.");
+					$this->_logger->addWarning("Stale database record (no such file: \"$path\"). " .
+						"Record will be removed from media database.");
 					$this->_dao->deleteMedia($media->id);
 					continue;
 				}
@@ -84,9 +84,6 @@ class AwsStorageManager {
 		return $this->getOffloadableMedia();
 	}
 
-	/**
-	 * Overrides method in RemoteStorageManager
-	 */
 	public function putFiles ()
 	{
 		$panicFile = $this->_context->getRequiredProperty('panicFile');
@@ -102,9 +99,8 @@ class AwsStorageManager {
 				$this->_logger->addDebug('Offloading ' . $file);
 				$result = $this->put($file);
 				if (isset($result->error)) {
-					throw new Exception('Could not put ' . $file . ' to AWS');
+					throw new Exception('Could not put ' . $file . ' to AWS: ' . $result->error);
 				}
-				
 				$this->_dao->setBackupOkForMediaFile($this->_getMediaFileId($file), $result);
 			}
 			
@@ -122,7 +118,7 @@ class AwsStorageManager {
 		
 		// Double-check if file actually exists
 		if (!is_file($file)) {
-			$result->error = 'Unable to put file to AWS: '  . $file . ' does not exist';
+			$result->error = "Could not put $file to AWS: file does not exist";
 			return $result;
 		}
 		
@@ -151,7 +147,7 @@ class AwsStorageManager {
 				date("Y-m-d H:i:s", strtotime($info['headers']['date'])) : null;
 			
 		} catch (S3Exception $e) {
-			$message = "Unable to put $file to AWS: " . $e->getMessage();
+			$message = "Could not put $file to AWS: : " . $e->getMessage();
 			$this->_logger->addError($message);
 			$result->error = $message;
 		}
