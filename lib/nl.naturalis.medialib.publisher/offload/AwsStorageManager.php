@@ -105,7 +105,7 @@ class AwsStorageManager {
 					throw new Exception('Could not put ' . $file . ' to AWS');
 				}
 				
-				$this->_dao->setBackupOkForMediaFile(_getMediaFileId($file), $result);
+				$this->_dao->setBackupOkForMediaFile($this->_getMediaFileId($file), $result);
 			}
 			
 		} catch (Exception $e) {
@@ -118,7 +118,7 @@ class AwsStorageManager {
 	
 	public function put ($file) 
 	{
-		if (!$this->awsClient) {
+		if (!$this->_awsClient) {
 			$this->_initAwsClient();
 		}
 		
@@ -129,7 +129,7 @@ class AwsStorageManager {
 		$result = new \stdClass;
 		
 		try {
-			$awsResult = $this->awsClient->putObject([
+			$awsResult = $this->_awsClient->putObject([
 				'Bucket'     => $bucket,
 				'Key'        => $key,
 				'SourceFile' => $file,
@@ -170,7 +170,7 @@ class AwsStorageManager {
 		$secret = $this->_config->offload->aws->secret;
 		
 		try {
-			$this->awsClient = new S3Client([
+			$this->_awsClient = new S3Client([
 				'version'     => $version,
 				'region'      => $region,
 				'credentials' => [
@@ -182,6 +182,8 @@ class AwsStorageManager {
 		} catch (S3Exception $e) {
 			throw $e;
 		}
+		
+		return $this->_awsClient;
 	}
 	
 	private function _getMediaFileId ($file)
