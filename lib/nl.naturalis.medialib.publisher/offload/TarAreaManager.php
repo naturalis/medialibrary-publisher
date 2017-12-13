@@ -214,7 +214,7 @@ class TarAreaManager {
 		
 		$this->_logStatistics($startTime, $totalSize, $totalFiles);
 		
-		return count($totalFiles);
+		return $totalFiles;
 		
 	}
 	

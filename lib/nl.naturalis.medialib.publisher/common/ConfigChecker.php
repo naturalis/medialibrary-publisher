@@ -64,6 +64,9 @@ class ConfigChecker {
 		}
 		
 		$aws = ['region', 'bucket', 'key', 'secret', 'version'];
+		if (!property_exists($this->_config->offload, 'aws')) {
+			throw new Exception('Configuration error: offload.aws settings missing in config.');
+		}
 		foreach ($aws as $setting) {
 			if (!isset($this->_config->offload->aws->{$setting}) || 
 				empty($this->_config->offload->aws->{$setting})) {
