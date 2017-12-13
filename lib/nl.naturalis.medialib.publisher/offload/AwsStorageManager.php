@@ -130,17 +130,14 @@ class AwsStorageManager {
 			$this->_initAwsClient();
 		}
 		
-		$bucket = $this->_config->offload->aws->bucket;
-		$sha256 = hash_file('sha256', $file);
 		$extension = FileUtil::getExtension($file, true);
-		$key = trim(str_replace($extension, '', basename($file)), ". ");
 		
 		try {			
 			$awsResult = $this->_awsClient->putObject([
-				'Bucket'        => $bucket,
-				'Key'           => $key,
+				'Bucket'        => $this->_config->offload->aws->bucket,
+				'Key'           => trim(str_replace($extension, '', basename($file)), ". "),
 				'SourceFile'    => $file,
-				"ContentSHA256" => $sha256,
+				"ContentSHA256" => hash_file('sha256', $file),
 				'Content-Type'  => mime_content_type($file),
 				'Metadata'      => [
 					'Original-File-Name' => basename($file),
