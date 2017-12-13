@@ -118,6 +118,14 @@ class AwsStorageManager {
 	
 	public function put ($file) 
 	{
+		$result = new \stdClass;
+		
+		// Double-check if file actually exists
+		if (!is_file($file)) {
+			$result->error = 'Unable to put file to AWS: '  . $file . ' does not exist';
+			return $result;
+		}
+		
 		if (!$this->_awsClient) {
 			$this->_initAwsClient();
 		}
@@ -126,9 +134,7 @@ class AwsStorageManager {
 		$sha256 = hash_file('sha256', $file);
 		$extension = FileUtil::getExtension($file, true);
 		$key = trim(str_replace($extension, '', basename($file)), ". ");
-		$result = new \stdClass;
-		
-		try {
+		try {			
 			$awsResult = $this->_awsClient->putObject([
 				'Bucket'     => $bucket,
 				'Key'        => $key,
