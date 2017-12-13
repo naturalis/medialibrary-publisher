@@ -66,6 +66,9 @@ class Harvester extends PublisherObject {
 			$mediaFileIndexer = new MediaFileIndexer($this->_context);
 			$mediaFileIndexer->setPhase1Directory($stagingAreaManager->getPhase1Directory());
 			$mediaFileIndexer->setPhase2Directory($stagingAreaManager->getPhase2Directory());
+
+			
+/*			Resubmit disabled		
 			
 			// Process files from the "resubmit" directory. Files placed
 			// in this directory must be regarded as revisions or fixes of
@@ -79,6 +82,8 @@ class Harvester extends PublisherObject {
 			$this->_numResubmits = $mediaFileIndexer->getNumIndexed();
 			$this->_numErrors = $mediaFileIndexer->getNumErrors();
 			$this->_totalSize = $mediaFileIndexer->getTotalFileSize();
+*/
+			
 			
 			// Then from the regular "harvest" directory. Files placed in
 			// this regarded must be presumed to be new. Therefore, if
