@@ -20,37 +20,37 @@ class RemoteStorageManager {
 	 * 
 	 * @var Context
 	 */
-	protected $_context;
+	private $_context;
 	/**
 	 *
 	 * @var Logger
 	 */
-	protected $_logger;
+	private $_logger;
 	/**
 	 *
 	 * @var Config
 	 */
-	protected $_config;
+	private $_config;
 	/**
 	 *
 	 * @var HarvesterDAO
 	 */
-	protected $_dao;
+	private $_dao;
 	/**
 	 *
 	 * @var resource
 	 */
-	protected $_conn;
+	private $_conn;
 	/**
 	 *
 	 * @var string
 	 */
-	protected $_tarsDir;
+	private $_tarsDir;
 	/**
 	 *
 	 * @var string
 	 */
-	protected $_remoteDir;
+	private $_remoteDir;
 
 
 	public function __construct(Context $context)
@@ -204,7 +204,7 @@ class RemoteStorageManager {
 	}
 
 
-	protected function _offload($tarFile)
+	private function _offload($tarFile)
 	{
 		$maxAttempts = max(1, (int) $this->_config->offload->ftp->maxUploadAttempts);
 		for($i = 0; $i < $maxAttempts; ++$i) {
@@ -217,7 +217,7 @@ class RemoteStorageManager {
 	}
 
 
-	protected function _offloadOnce($tarFile)
+	private function _offloadOnce($tarFile)
 	{
 		$localPath = $this->_tarsDir . DIRECTORY_SEPARATOR . $tarFile;
 		if(!$this->_connected() || $this->_config->getBoolean('offload.ftp.reconnectPerFile')) {
@@ -235,7 +235,7 @@ class RemoteStorageManager {
 	}
 
 
-	protected function _connect()
+	private function _connect()
 	{
 		$x = (int) $this->_config->offload->ftp->maxConnectionAttempts;
 		for($i = 0; $i < $x; ++$i) {
@@ -248,7 +248,7 @@ class RemoteStorageManager {
 	}
 
 
-	protected function _connectOnce()
+	private function _connectOnce()
 	{
 		// If one was open already, close it first
 		$this->closeConnection();
@@ -332,13 +332,13 @@ class RemoteStorageManager {
 	}
 
 
-	protected function _connected()
+	private function _connected()
 	{
 		return is_resource($this->_conn);
 	}
 
 
-	protected function _getInitDir()
+	private function _getInitDir()
 	{
 		$dir = $this->_config->offload->ftp->initDir;
 		if($dir === null || $dir === '.' || $dir === '/') {
@@ -348,7 +348,7 @@ class RemoteStorageManager {
 	}
 
 
-	protected function _logStatistics($startTime)
+	private function _logStatistics($startTime)
 	{
 		$seconds = time() - $startTime;
 		$this->_logger->addInfo('Time spent on offloading tar files: ' . DateTimeUtil::hoursMinutesSeconds($seconds, true));

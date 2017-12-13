@@ -89,7 +89,7 @@ class Offloader extends PublisherObject {
 			if (count($awsStorageManager->getOffloadableMedia()) == 0) {
 				throw new JoblessException();
 			}
-			$remoteStorageManager->sendBatch();
+			$remoteStorageManager->putFiles();
 			
 		}
 		catch(Exception $e) {

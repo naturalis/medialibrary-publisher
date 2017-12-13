@@ -16,15 +16,24 @@ use Aws\S3\Exception\S3Exception;
  *
  * @author ayco_holleman, Ruud Altenburg
  */
-class AwsStorageManager extends RemoteStorageManager {
+class AwsStorageManager {
 	
+	private $_context;
+	private $_logger;
+	private $_config;
+	private $_dao;
+	private $_conn;
 	private $_awsClient;
 	private $_backupGroup;
 	private $_fileList = [];
 	
 	public function __construct (Context $context, $backupGroup)
 	{
-		parent::__construct($context);
+		$this->_context = $context;
+		$this->_config = $context->getConfig();
+		$this->_logger = $context->getLogger(__CLASS__);
+		$this->_dao = new HarvesterDAO($context);
+		$time = $context->getRequiredProperty('start');
 		$this->_backupGroup = $backupGroup;
 	}
 	
@@ -67,7 +76,7 @@ class AwsStorageManager extends RemoteStorageManager {
 	/**
 	 * Overrides method in RemoteStorageManager
 	 */
-	public function sendBatch ()
+	public function putFiles ()
 	{
 		$panicFile = $this->_context->getRequiredProperty('panicFile');
 		PublisherObject::validatePanicFile($panicFile);
@@ -102,23 +111,22 @@ class AwsStorageManager extends RemoteStorageManager {
 			$this->_initAwsClient();
 		}
 		
-		$localPath = $this->_tarsDir . DIRECTORY_SEPARATOR . $file;
 		$bucket = $this->_config->offload->aws->bucket;
-		$sha256 = hash_file('sha256', $localPath);
-		$extension = FileUtil::getExtension($localPath, true);
-		$key = trim(str_replace($extension, '', basename($localPath)), ". ");
+		$sha256 = hash_file('sha256', $file);
+		$extension = FileUtil::getExtension($file, true);
+		$key = trim(str_replace($extension, '', basename($file)), ". ");
 		$result = new \stdClass;
 		
 		try {
 			$awsResult = $this->awsClient->putObject([
 				'Bucket'     => $bucket,
 				'Key'        => $key,
-				'SourceFile' => $localPath,
+				'SourceFile' => $file,
 				"ContentSHA256" => $sha256,
 				'Metadata' => [
-					'file_name' => basename($localPath),
+					'file_name' => basename($file),
 					'extension' => $extension,
-					'mime_type' => mime_content_type($localPath),
+					'mime_type' => mime_content_type($file),
 				],
 			]);
 			$info = $awsData->get('@metadata');
@@ -128,7 +136,7 @@ class AwsStorageManager extends RemoteStorageManager {
 				date("Y-m-d H:i:s", strtotime($info['headers']['date'])) : null;
 			
 		} catch (S3Exception $e) {
-			$message = "Unable to put $localPath to AWS: " . $e->getMessage();
+			$message = "Unable to put $file to AWS: " . $e->getMessage();
 			$this->_logger->addError($message);
 			$result->error = $message;
 		}
@@ -136,7 +144,7 @@ class AwsStorageManager extends RemoteStorageManager {
 		return $result;
 	}
 	
-	protected function _logStatistics($startTime)
+	private function _logStatistics ($startTime)
 	{
 		$seconds = time() - $startTime;
 		$this->_logger->addInfo('Time spent on offloading file to AWS: ' . 
