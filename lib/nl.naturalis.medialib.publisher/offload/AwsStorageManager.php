@@ -148,7 +148,7 @@ class AwsStorageManager {
 				],
 			]);
 			$info = $awsResult->get('@metadata');
-			$result->sha256 = $sha256;
+			$result->etag = str_replace('"', '', $awsResult->get('ETag'));
 			$result->awsUri = isset($info['effectiveUri']) ? $info['effectiveUri'] : null;
 			$result->created = isset($info['headers']['date']) ?
 				date("Y-m-d H:i:s", strtotime($info['headers']['date'])) : null;
