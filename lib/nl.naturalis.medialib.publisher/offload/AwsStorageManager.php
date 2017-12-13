@@ -6,6 +6,7 @@ require APPLICATION_PATH . '/vendor/autoload.php';
 
 use nl\naturalis\medialib\publisher\common\ConfigChecker;
 use nl\naturalis\medialib\publisher\PublisherObject;
+use nl\naturalis\medialib\publisher\db\dao\HarvesterDAO;
 use nl\naturalis\medialib\util\context\Context;
 use nl\naturalis\medialib\util\DateTimeUtil;
 use nl\naturalis\medialib\util\FileUtil;
