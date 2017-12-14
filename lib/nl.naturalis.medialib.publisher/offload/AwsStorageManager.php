@@ -129,11 +129,13 @@ class AwsStorageManager {
 		}
 		
 		$extension = FileUtil::getExtension($file, true);
+		$key = trim(str_replace([strtolower($extension), strtoupper($extension)], '', 
+			basename($file)), ". ");
 		
 		try {			
 			$awsResult = $this->_awsClient->putObject([
 				'Bucket'        => $this->_config->offload->aws->bucket,
-				'Key'           => trim(str_replace($extension, '', basename($file)), ". "),
+				'Key'           => $key,
 				'SourceFile'    => $file,
 				"ContentSHA256" => hash_file('sha256', $file),
 				'Content-Type'  => mime_content_type($file),
