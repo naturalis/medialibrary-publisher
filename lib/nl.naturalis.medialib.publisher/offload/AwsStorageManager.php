@@ -4,6 +4,7 @@ namespace nl\naturalis\medialib\publisher\offload;
 
 require APPLICATION_PATH . '/vendor/autoload.php';
 
+use \Exception;
 use nl\naturalis\medialib\publisher\common\ConfigChecker;
 use nl\naturalis\medialib\publisher\PublisherObject;
 use nl\naturalis\medialib\publisher\db\dao\HarvesterDAO;
