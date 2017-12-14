@@ -129,7 +129,6 @@ class AwsStorageManager {
 		}
 		
 		$extension = FileUtil::getExtension($file, true);
-		$key = ;
 		
 		try {			
 			$awsResult = $this->_awsClient->putObject([
