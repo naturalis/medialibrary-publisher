@@ -39,7 +39,7 @@ class AwsStorageManager {
 		
 		// Backup group is required, better make sure it's there
 		if (is_null($backupGroup)) {
-			throw new Exception('AWS error: backup group not set');
+			throw new Exception('AWS error: backup group not set!');
 		}
 		$this->_backupGroup = $backupGroup;
 
@@ -120,7 +120,7 @@ class AwsStorageManager {
 		
 		// Double-check if file actually exists
 		if (!is_file($file)) {
-			$result->error = "Could not put $file to AWS: file does not exist";
+			$result->error = "Could not put $file to AWS: file does not exist.";
 			return $result;
 		}
 		
@@ -160,7 +160,7 @@ class AwsStorageManager {
 	private function _logStatistics ($startTime)
 	{
 		$seconds = time() - $startTime;
-		$this->_logger->addInfo('Time spent on offloading file to AWS: ' . 
+		$this->_logger->addInfo('Time spent on offloading files to AWS: ' . 
 			DateTimeUtil::hoursMinutesSeconds($seconds, true));
 	}
 	
