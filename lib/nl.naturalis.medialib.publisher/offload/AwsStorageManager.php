@@ -91,13 +91,12 @@ class AwsStorageManager {
 		PublisherObject::validatePanicFile($panicFile);
 		
 		$startTime = time();
-		$files = $this->getFileList();
 		
 		try {
-			$this->_logger->addInfo('Offloading ' . count($files) . ' files from backup group ' . 
-				$this->_backupGroup . ' to AWS');
+			$this->_logger->addInfo('Offloading ' . count($this->getFileList()) . 
+				' files from backup group ' . $this->_backupGroup . ' to AWS');
 			
-			foreach ($files as $file) {
+			foreach ($this->getFileList() as $file) {
 				PublisherObject::checkPanicFile($panicFile);
 				$this->_logger->addDebug('Offloading ' . $file);
 				$result = $this->put($file);
