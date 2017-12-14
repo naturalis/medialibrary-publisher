@@ -28,7 +28,7 @@ class AwsStorageManager {
 	private $_backupGroup;
 	private $_fileList = [];
 	
-	public function __construct (Context $context, $backupGroup = 0)
+	public function __construct (Context $context, $backupGroup = null)
 	{
 		// RemoteStorage construct
 		$this->_context = $context;
@@ -38,7 +38,7 @@ class AwsStorageManager {
 		$time = $context->getRequiredProperty('start');
 		
 		// Backup group is required, better make sure it's there
-		if (empty($backupGroup)) {
+		if (is_null($backupGroup)) {
 			throw new Exception('AWS error: backup group not set');
 		}
 		$this->_backupGroup = $backupGroup;
@@ -91,11 +91,13 @@ class AwsStorageManager {
 		PublisherObject::validatePanicFile($panicFile);
 		
 		$startTime = time();
+		$files = $this->getFileList();
 		
 		try {
-			$this->_logger->addInfo('Offloading files to AWS');
+			$this->_logger->addInfo('Offloading ' . count($files) . ' files from backup group ' . 
+				$this->_backupGroup . ' to AWS');
 			
-			foreach ($this->getFileList() as $file) {
+			foreach ($files as $file) {
 				PublisherObject::checkPanicFile($panicFile);
 				$this->_logger->addDebug('Offloading ' . $file);
 				$result = $this->put($file);
