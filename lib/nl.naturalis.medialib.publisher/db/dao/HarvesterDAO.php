@@ -136,7 +136,7 @@ $this->_logger->addInfo(var_dump($fileInfo));
 		$stmt->bindValue(3, $fileInfo->created);
 		$stmt->bindValue(4, $id);
 		$this->_executeStatement($stmt);
-$this->_logger->addInfo(var_dump($stmt));
+$this->_logger->addInfo($stmt->debugDumpParams());
 		if ($stmt->rowCount() === 0) {
 			throw new Exception("Could not set source file AWS backup data for file id: $id");
 		}
