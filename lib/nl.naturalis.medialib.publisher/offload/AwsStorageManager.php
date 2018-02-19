@@ -100,7 +100,7 @@ class AwsStorageManager {
 				PublisherObject::checkPanicFile($panicFile);
 				$this->_logger->addDebug('Offloading ' . $file);
 				$result = $this->put($file);
-$this->_logger->addInfo("Amazon data: " . var_dump($result));
+$this->_logger->addDebug("Amazon data: " . var_dump($result));
 				if (isset($result->error)) {
 					throw new Exception('Could not put ' . $file . ' to AWS: ' . $result->error);
 				}
