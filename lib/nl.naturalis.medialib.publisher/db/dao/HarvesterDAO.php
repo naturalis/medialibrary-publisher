@@ -126,6 +126,7 @@ class HarvesterDAO extends BaseDAO {
 	
 	public function setBackupOkForMediaFile ($id, $fileInfo)
 	{
+$this->_logger->addInfo(var_dump($fileInfo));
 		$sql = 'UPDATE media 
 			SET source_file_etag = ?, source_file_aws_uri = ?, source_file_backup_created = ?, backup_ok = 1 
 			WHERE id = ?';
@@ -135,6 +136,7 @@ class HarvesterDAO extends BaseDAO {
 		$stmt->bindValue(3, $fileInfo->created);
 		$stmt->bindValue(4, $id);
 		$this->_executeStatement($stmt);
+$this->_logger->addInfo(var_dump($stmt));
 		if ($stmt->rowCount() === 0) {
 			throw new Exception("Could not set source file AWS backup data for file id: $id");
 		}
