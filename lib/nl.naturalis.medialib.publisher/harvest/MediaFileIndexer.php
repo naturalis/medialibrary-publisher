@@ -140,6 +140,9 @@ class MediaFileIndexer {
 					try {
 						$this->index($path, $spinner->next(), $isResubmit);
 					}
+					catch(FileNameTooLongException $e) {
+						$this->_logger->addError($e->getMessage());
+					}
 					catch(MediaNotFoundException $e) {
 						$this->_logger->addError($e->getMessage());
 						$this->_moveToCemetary($path);
@@ -168,7 +171,7 @@ class MediaFileIndexer {
 		$file = basename($path);
 		$regno = FileUtil::basename($file);
 		if(strlen($regno) > self::MAX_REGNO_LENGTH) {
-			throw new \Exception('Invalid image ID: ' . $regno . ' (length exceeds ' . self::MAX_REGNO_LENGTH . ' characters)');
+			throw new FileNameTooLongException($regno, self::MAX_REGNO_LENGTH);
 		}
 		$mediaId = $this->_dao->getMediaId($regno);
 		if($mediaId === false) {
