@@ -174,6 +174,7 @@ class MediaFileIndexer {
 		$file = basename($path);
 		$regno = FileUtil::basename($file);
 		if(strlen($regno) > self::MAX_REGNO_LENGTH) {
+			++$this->_numErrors;
 			throw new FileNameTooLongException($regno, self::MAX_REGNO_LENGTH);
 		}
 		$mediaId = $this->_dao->getMediaId($regno);
