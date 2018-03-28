@@ -143,7 +143,8 @@ class MediaFileIndexer {
 					}
 					catch(FileNameTooLongException $e) {
 						$this->_logger->addError($e->getMessage());
-						$this->_moveToCemetary($path);
+						$newPath = FileUtil::createPath($this->_config->deadImagesDirectory, basename($path));
+						FileUtil::rename($path, $newPath);
 					}
 					catch(MediaNotFoundException $e) {
 						$this->_logger->addError($e->getMessage());
