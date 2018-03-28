@@ -5,6 +5,7 @@ namespace nl\naturalis\medialib\publisher\harvest;
 use nl\naturalis\medialib\publisher\PublisherObject;
 use nl\naturalis\medialib\publisher\db\dao\HarvesterDAO;
 use nl\naturalis\medialib\publisher\exception\DuplicateMediaFileException;
+use nl\naturalis\medialib\publisher\exception\FileNameTooLongException;
 use nl\naturalis\medialib\publisher\exception\MediaNotFoundException;
 use nl\naturalis\medialib\publisher\exception\UserInterruptException;
 use nl\naturalis\medialib\util\context\Context;
