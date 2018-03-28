@@ -142,6 +142,7 @@ class MediaFileIndexer {
 					}
 					catch(FileNameTooLongException $e) {
 						$this->_logger->addError($e->getMessage());
+						$this->_moveToCemetary($path);
 					}
 					catch(MediaNotFoundException $e) {
 						$this->_logger->addError($e->getMessage());
