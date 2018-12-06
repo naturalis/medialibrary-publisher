@@ -156,6 +156,13 @@ class MediaFileIndexer {
 						FileUtil::rename($path, $newPath);
 					}
 				}
+				// Ruud 05-12-18: move non-accepted (media or other) files to cementary directly, 
+				// as they cause clean up problems later. Use case: Thumbs.db file.
+				else if (is_file($path) && !in_array(FileUtil::getExtension($path), $fileTypes)) {
+				    $this->_logger->addError('Not an excepted media type: ' . basename($path) . 
+				        '. (If in error, add the file type to the list of excepted media.)');
+				    $this->_moveToCemetary($path);
+				}
 				$iterator->next();
 			}
 		}
